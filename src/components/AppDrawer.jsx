@@ -1,5 +1,7 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment, useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import { AppContext } from '../App';
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -13,9 +15,12 @@ import Collapse from '@material-ui/core/Collapse';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import LinearProgress from '@material-ui/core/LinearProgress';
+// ------------------------- Icons -------------------------
 import MenuIcon from '@material-ui/icons/Menu';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import SubdirectoryArrowRight from '@material-ui/icons/SubdirectoryArrowRight';
@@ -24,12 +29,15 @@ import ListAlt from '@material-ui/icons/ListAlt';
 import AddBox from '@material-ui/icons/AddBox';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import Input from '@material-ui/icons/Input';
+import School from '@material-ui/icons/School';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
 import Code from '@material-ui/icons/Code';
-import Visibility  from '@material-ui/icons/Visibility';  
+import Person from '@material-ui/icons/Person';
+import PersonAdd from '@material-ui/icons/PersonAdd';
+import People from '@material-ui/icons/People';
+import Visibility from '@material-ui/icons/Visibility';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import SettingsBackupRestore from '@material-ui/icons/SettingsBackupRestore';
 
 const drawerWidth = 220;
 
@@ -40,7 +48,7 @@ const styles = theme => ({
     }
   },
   root: {
-    height: '100%',
+    // height: `calc(100% - 1px)`,
     display: 'flex'
   },
   appBar: {
@@ -101,28 +109,45 @@ const styles = theme => ({
   },
   // Content Body Class Style :
   content: {
-    // flexGrow: 1,
-    height: `calc(100% - 100px)`,
+    flexGrow: 1,
+    height: `calc(100% - ${theme.spacing.unit * 5})`,
     padding: theme.spacing.unit * 3
   },
   listIcon: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: 8
+      marginLeft: theme.spacing.unit
     }
+  },
+  listText: {
+    textDecoration: 'none'
   },
   nested: {
     paddingLeft: theme.spacing.unit * 4
   },
   lightTooltip: {
-    // backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
     boxShadow: theme.shadows[1],
     fontSize: 15
+  },
+  paper: {
+    flexGrow: 1
+  },
+  linearProg: {
+    position: 'fixed',
+    top: theme.spacing.unit * 6,
+    [theme.breakpoints.up('sm')]: {
+      top: theme.spacing.unit * 8
+    },
+    left: 0,
+    right: 0
   }
 });
 
 const Header = props => {
   const { classes } = props;
+
+  // Get Root Context
+  const context = useContext(AppContext);
 
   // Drawer State
   const [open, setOpen] = useState(false);
@@ -133,11 +158,10 @@ const Header = props => {
   const [tambah, setTambah] = useState(false);
 
   // Menu State
-  // const [auth, setAuth] = useState(true);
   const [anchorEl, setAnchor] = useState(null);
   const openMenu = Boolean(anchorEl);
 
-  // Close Drawe & Dropdown
+  // Close Drawer & Dropdown
   const closeAll = () => {
     setOpen(false);
     setDownload(false);
@@ -155,6 +179,12 @@ const Header = props => {
 
   return (
     <Fragment>
+      <LinearProgress
+        color='primary'
+        className={classNames(classes.linearProg, {
+          [classes.hide]: !context.loading
+        })}
+      />
       <div className={classes.root}>
         <AppBar
           color='primary'
@@ -175,23 +205,29 @@ const Header = props => {
             ) : (
               <IconButton
                 color='inherit'
-                onClick={() => closeAll()}
+                onClick={closeAll}
                 className={classes.menuButton}
               >
                 <ArrowBack />
               </IconButton>
             )}
 
-            <Typography
-              variant='h6'
-              color='inherit'
-              noWrap
-              style={{ flexGrow: 1 }}
-            >
-              Basic Laboratory
-            </Typography>
+            <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
+              <Typography variant='h6' color='inherit' noWrap>
+                Basic Laboratory
+              </Typography>
+            </Link>
 
-            <Typography color='inherit' variant='subtitle1' noWrap>201631202</Typography>
+            <div style={{ flexGrow: 1 }} />
+
+            <Link
+              to='/profile'
+              style={{ textDecoration: 'none', color: 'white' }}
+            >
+              <Typography color='inherit' variant='subtitle1' noWrap>
+                {context.user.nim}
+              </Typography>
+            </Link>
 
             <div>
               <IconButton
@@ -217,12 +253,46 @@ const Header = props => {
                 open={openMenu}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Login</MenuItem>
-                <MenuItem onClick={handleClose}>Register</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    context.loginOpen();
+                    handleClose();
+                  }}
+                >
+                  <ListItemIcon>
+                    <Person />
+                  </ListItemIcon>
+                  <ListItemText>Login</ListItemText>
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() => {
+                    context.registerOpen();
+                    handleClose();
+                  }}
+                >
+                  <ListItemIcon>
+                    <PersonAdd />
+                  </ListItemIcon>
+                  <ListItemText>Register</ListItemText>
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() => {
+                    context.forgetOpen();
+                    handleClose();
+                  }}
+                >
+                  <ListItemIcon>
+                    <SettingsBackupRestore />
+                  </ListItemIcon>
+                  <ListItemText>Lupa Password</ListItemText>
+                </MenuItem>
               </Menu>
             </div>
           </Toolbar>
         </AppBar>
+
         <Drawer
           variant='permanent'
           className={classNames(classes.drawer, {
@@ -263,23 +333,23 @@ const Header = props => {
             </Tooltip>
 
             <Collapse in={download} timeout='auto' unmountOnExit>
-              <List component='div' disablePadding>
+              <Link to='/materi' style={{ textDecoration: 'none' }}>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <SubdirectoryArrowRight />
                   </ListItemIcon>
                   <ListItemText primary='Materi' />
                 </ListItem>
-              </List>
+              </Link>
 
-              <List component='div' disablePadding>
+              <Link to='/laporan' style={{ textDecoration: 'none' }}>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <SubdirectoryArrowRight />
                   </ListItemIcon>
                   <ListItemText primary='Laporan' />
                 </ListItem>
-              </List>
+              </Link>
             </Collapse>
 
             {/* View Dosen */}
@@ -289,7 +359,7 @@ const Header = props => {
               placement='right'
               classes={{ tooltip: classes.lightTooltip }}
             >
-              <ListItem button>
+              <ListItem button onClick={() => context.isLoading(true)}>
                 <ListItemIcon className={classes.listIcon}>
                   <Visibility />
                 </ListItemIcon>
@@ -304,7 +374,7 @@ const Header = props => {
               placement='right'
               classes={{ tooltip: classes.lightTooltip }}
             >
-              <ListItem button>
+              <ListItem button onClick={() => context.isLoading(false)}>
                 <ListItemIcon className={classes.listIcon}>
                   <Code />
                 </ListItemIcon>
@@ -318,6 +388,7 @@ const Header = props => {
           <Divider />
           <List>
             {/* Upload : Tugas, Ujian */}
+
             <Tooltip
               title={open ? '' : 'Upload'}
               placement='right'
@@ -365,9 +436,22 @@ const Header = props => {
             >
               <ListItem button>
                 <ListItemIcon className={classes.listIcon}>
-                  <MailIcon />
+                  <School />
                 </ListItemIcon>
                 <ListItemText primary='Nilai Laporan' />
+              </ListItem>
+            </Tooltip>
+
+            <Tooltip
+              title={open ? '' : 'Reset Password'}
+              placement='right'
+              classes={{ tooltip: classes.lightTooltip }}
+            >
+              <ListItem button>
+                <ListItemIcon className={classes.listIcon}>
+                  <SettingsBackupRestore />
+                </ListItemIcon>
+                <ListItemText primary='Reset Password' />
               </ListItem>
             </Tooltip>
           </List>
@@ -377,6 +461,7 @@ const Header = props => {
           <Divider />
           <List>
             {/* Tambah : Materi, Laporan, Mata Kuliah, Kelas  */}
+
             <Tooltip
               title={open ? '' : 'Tambahkan'}
               placement='right'
@@ -450,10 +535,10 @@ const Header = props => {
               </ListItem>
             </Tooltip>
 
-            {/* Ubah Kode */}
+            {/* Edit Kode */}
 
             <Tooltip
-              title={open ? '' : 'Ubah Kode'}
+              title={open ? '' : 'Edit Kode'}
               placement='right'
               classes={{ tooltip: classes.lightTooltip }}
             >
@@ -461,14 +546,14 @@ const Header = props => {
                 <ListItemIcon className={classes.listIcon}>
                   <SettingsEthernet />
                 </ListItemIcon>
-                <ListItemText primary='Ubah Kode' />
+                <ListItemText primary='Edit Kode' />
               </ListItem>
             </Tooltip>
 
-            {/* Ubah Jadwal */}
+            {/* Edit Jadwal */}
 
             <Tooltip
-              title={open ? '' : 'Ubah Jadwal'}
+              title={open ? '' : 'Edit Jadwal'}
               placement='right'
               classes={{ tooltip: classes.lightTooltip }}
             >
@@ -476,11 +561,28 @@ const Header = props => {
                 <ListItemIcon className={classes.listIcon}>
                   <ListAlt />
                 </ListItemIcon>
-                <ListItemText primary='Ubah Jadwal' />
+                <ListItemText primary='Edit Jadwal' />
+              </ListItem>
+            </Tooltip>
+
+            {/* Edit Jadwal */}
+
+            <Tooltip
+              title={open ? '' : 'Daftar User'}
+              placement='right'
+              classes={{ tooltip: classes.lightTooltip }}
+            >
+              <ListItem button>
+                <ListItemIcon className={classes.listIcon}>
+                  <People />
+                </ListItemIcon>
+                <ListItemText primary='Daftar User' />
               </ListItem>
             </Tooltip>
           </List>
         </Drawer>
+
+        {/* Application Page Content : */}
         <main className={classes.content}>
           <div className={classes.toolbar} />
           {props.children}
