@@ -48,7 +48,6 @@ const styles = theme => ({
     }
   },
   root: {
-    // height: `calc(100% - 1px)`,
     display: 'flex'
   },
   appBar: {
@@ -78,6 +77,7 @@ const styles = theme => ({
     display: 'none'
   },
   drawer: {
+    overflow: 'auto',
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap'
@@ -94,7 +94,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    overflowX: 'hidden',
+    // overflowX: 'hidden',
     width: theme.spacing.unit * 7 + 1,
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing.unit * 9 + 1
@@ -134,7 +134,7 @@ const styles = theme => ({
   },
   linearProg: {
     position: 'fixed',
-    top: theme.spacing.unit * 6,
+    top: theme.spacing.unit * 7 ,
     [theme.breakpoints.up('sm')]: {
       top: theme.spacing.unit * 8
     },
@@ -185,7 +185,7 @@ const Header = props => {
           [classes.hide]: !context.loading
         })}
       />
-      <div className={classes.root}>
+      <div className={classNames('hideScroll', classes.root)}>
         <AppBar
           color='primary'
           position='fixed'
@@ -295,12 +295,12 @@ const Header = props => {
 
         <Drawer
           variant='permanent'
-          className={classNames(classes.drawer, {
+          className={classNames(classes.drawer, 'hideScroll',{
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open
           })}
           classes={{
-            paper: classNames({
+            paper: classNames('hideScroll',{
               [classes.drawerOpen]: open,
               [classes.drawerClose]: !open
             })
@@ -308,6 +308,7 @@ const Header = props => {
           open={open}
         >
           <div className={classes.toolbar} />
+
           <Divider />
           <List>
             {/* Download Menu : Materi, Laporan */}

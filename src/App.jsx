@@ -13,6 +13,8 @@ import Profile from './Components/Pages/Profile';
 import DownloadMateri from './Components/Pages/DownloadMateri';
 import DownloadLaporan from './Components/Pages/DownloadLaporan';
 
+import './Manual.css';
+
 export const AppContext = React.createContext();
 
 class App extends Component {
@@ -60,7 +62,7 @@ class App extends Component {
         <AppContext.Provider value={this.state}>
           <CssBaseline />
           <LinearProgress color='primary' />
-          <AppDrawer>
+          <AppDrawer >
             <Switch>
               <Route exact path='/' component={Main} />
               <Route path='/profile' component={Profile} />
