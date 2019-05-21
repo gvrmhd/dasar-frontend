@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { AppContext } from '../App';
 import { withStyles } from '@material-ui/core/styles';
+import { typography } from '@material-ui/system';
+import styled from 'styled-components';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -134,7 +136,7 @@ const styles = theme => ({
   },
   linearProg: {
     position: 'fixed',
-    top: theme.spacing.unit * 7 ,
+    top: theme.spacing.unit * 7,
     [theme.breakpoints.up('sm')]: {
       top: theme.spacing.unit * 8
     },
@@ -177,6 +179,8 @@ const Header = props => {
     setAnchor(null);
   };
 
+  const Box = styled.span`${typography}`;
+
   return (
     <Fragment>
       <LinearProgress
@@ -213,23 +217,26 @@ const Header = props => {
             )}
 
             <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
-              <Typography variant='h6' color='inherit' noWrap>
-                Basic Laboratory
+              <Typography variant='h6' color='inherit' inline >
+                <Box fontWeight={700} inline>BASIC</Box>Lab
               </Typography>
             </Link>
 
             <div style={{ flexGrow: 1 }} />
 
-            <Link
-              to='/profile'
-              style={{ textDecoration: 'none', color: 'white' }}
-            >
-              <Typography color='inherit' variant='subtitle1' noWrap>
-                {context.user.nim}
-              </Typography>
-            </Link>
+            {context.checkUser() ? (
+              <Link
+                to='/profile'
+                style={{ textDecoration: 'none', color: 'white' }}
+              >
+                <Typography color='inherit' variant='subtitle1' noWrap>
+                  {context.user.nim}
+                </Typography>
+              </Link>
+            ) : null}
 
             <div>
+              {/* --------------------------------- Profile Menu --------------------------------- */}
               <IconButton
                 aria-owns={openMenu ? 'menu-appbar' : undefined}
                 aria-haspopup='true'
@@ -253,54 +260,75 @@ const Header = props => {
                 open={openMenu}
                 onClose={handleClose}
               >
-                <MenuItem
-                  onClick={() => {
-                    context.loginOpen();
-                    handleClose();
-                  }}
-                >
-                  <ListItemIcon>
-                    <Person />
-                  </ListItemIcon>
-                  <ListItemText>Login</ListItemText>
-                </MenuItem>
+                {!context.checkUser() ? (
+                  [
+                    <MenuItem
+                      key={'login'}
+                      onClick={() => {
+                        context.setLogin(true);
+                        handleClose();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Person />
+                      </ListItemIcon>
+                      <ListItemText>Login</ListItemText>
+                    </MenuItem>,
 
-                <MenuItem
-                  onClick={() => {
-                    context.registerOpen();
-                    handleClose();
-                  }}
-                >
-                  <ListItemIcon>
-                    <PersonAdd />
-                  </ListItemIcon>
-                  <ListItemText>Register</ListItemText>
-                </MenuItem>
+                    <MenuItem
+                      key={'register'}
+                      onClick={() => {
+                        context.setRegister(true);
+                        handleClose();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <PersonAdd />
+                      </ListItemIcon>
+                      <ListItemText>Register</ListItemText>
+                    </MenuItem>,
 
-                <MenuItem
-                  onClick={() => {
-                    context.forgetOpen();
-                    handleClose();
-                  }}
-                >
-                  <ListItemIcon>
-                    <SettingsBackupRestore />
-                  </ListItemIcon>
-                  <ListItemText>Lupa Password</ListItemText>
-                </MenuItem>
+                    <MenuItem
+                      key={'forgetpass'}
+                      onClick={() => {
+                        context.setForget(true);
+                        handleClose();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <SettingsBackupRestore />
+                      </ListItemIcon>
+                      <ListItemText>Lupa Password</ListItemText>
+                    </MenuItem>
+                  ]
+                ) : (
+                  <MenuItem
+                    onClick={() => {
+                      context.setForget(true);
+                      handleClose();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <SettingsBackupRestore />
+                    </ListItemIcon>
+                    <ListItemText>Logout</ListItemText>
+                  </MenuItem>
+                )}
               </Menu>
             </div>
           </Toolbar>
         </AppBar>
 
+        {/* --------------------------------- Drawer Menu --------------------------------- */}
+
         <Drawer
           variant='permanent'
-          className={classNames(classes.drawer, 'hideScroll',{
+          className={classNames(classes.drawer, 'hideScroll', {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open
           })}
           classes={{
-            paper: classNames('hideScroll',{
+            paper: classNames('hideScroll', {
               [classes.drawerOpen]: open,
               [classes.drawerClose]: !open
             })
@@ -386,201 +414,209 @@ const Header = props => {
 
           {/* --------------------------------- User --------------------------------- */}
 
-          <Divider />
-          <List>
-            {/* Upload : Tugas, Ujian */}
+          {context.checkUser() ? (
+            <Fragment>
+              <Divider />
+              <List>
+                {/* Upload : Tugas, Ujian */}
 
-            <Tooltip
-              title={open ? '' : 'Upload'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem
-                button
-                onClick={() => {
-                  setUpload(i => !i);
-                  setOpen(true);
-                }}
-              >
-                <ListItemIcon className={classes.listIcon}>
-                  <OpenInBrowser />
-                </ListItemIcon>
-                <ListItemText primary='Upload' />
-                {upload ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-            </Tooltip>
+                <Tooltip
+                  title={open ? '' : 'Upload'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem
+                    button
+                    onClick={() => {
+                      setUpload(i => !i);
+                      setOpen(true);
+                    }}
+                  >
+                    <ListItemIcon className={classes.listIcon}>
+                      <OpenInBrowser />
+                    </ListItemIcon>
+                    <ListItemText primary='Upload' />
+                    {upload ? <ExpandLess /> : <ExpandMore />}
+                  </ListItem>
+                </Tooltip>
 
-            <Collapse in={upload} timeout='auto' unmountOnExit>
-              <List component='div' disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <SubdirectoryArrowRight />
-                  </ListItemIcon>
-                  <ListItemText primary='Tugas' />
-                </ListItem>
+                <Collapse in={upload} timeout='auto' unmountOnExit>
+                  <List component='div' disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <SubdirectoryArrowRight />
+                      </ListItemIcon>
+                      <ListItemText primary='Tugas' />
+                    </ListItem>
+                  </List>
+
+                  <List component='div' disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <SubdirectoryArrowRight />
+                      </ListItemIcon>
+                      <ListItemText primary='Ujian' />
+                    </ListItem>
+                  </List>
+                </Collapse>
+
+                <Tooltip
+                  title={open ? '' : 'Nilai Laporan'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem button>
+                    <ListItemIcon className={classes.listIcon}>
+                      <School />
+                    </ListItemIcon>
+                    <ListItemText primary='Nilai Laporan' />
+                  </ListItem>
+                </Tooltip>
+
+                <Tooltip
+                  title={open ? '' : 'Reset Password'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem button>
+                    <ListItemIcon className={classes.listIcon}>
+                      <SettingsBackupRestore />
+                    </ListItemIcon>
+                    <ListItemText primary='Reset Password' />
+                  </ListItem>
+                </Tooltip>
               </List>
-
-              <List component='div' disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <SubdirectoryArrowRight />
-                  </ListItemIcon>
-                  <ListItemText primary='Ujian' />
-                </ListItem>
-              </List>
-            </Collapse>
-
-            <Tooltip
-              title={open ? '' : 'Nilai Laporan'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem button>
-                <ListItemIcon className={classes.listIcon}>
-                  <School />
-                </ListItemIcon>
-                <ListItemText primary='Nilai Laporan' />
-              </ListItem>
-            </Tooltip>
-
-            <Tooltip
-              title={open ? '' : 'Reset Password'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem button>
-                <ListItemIcon className={classes.listIcon}>
-                  <SettingsBackupRestore />
-                </ListItemIcon>
-                <ListItemText primary='Reset Password' />
-              </ListItem>
-            </Tooltip>
-          </List>
+            </Fragment>
+          ) : null}
 
           {/* --------------------------------- Asisten --------------------------------- */}
 
-          <Divider />
-          <List>
-            {/* Tambah : Materi, Laporan, Mata Kuliah, Kelas  */}
+          {context.user.is_asisten ? (
+            <Fragment>
+              <Divider />
+              <List>
+                {/* Tambah : Materi, Laporan, Mata Kuliah, Kelas  */}
 
-            <Tooltip
-              title={open ? '' : 'Tambahkan'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem
-                button
-                onClick={() => {
-                  setTambah(i => !i);
-                  setOpen(true);
-                }}
-              >
-                <ListItemIcon className={classes.listIcon}>
-                  <AddBox />
-                </ListItemIcon>
-                <ListItemText primary='Tambahkan' />
-                {tambah ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-            </Tooltip>
+                <Tooltip
+                  title={open ? '' : 'Tambahkan'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem
+                    button
+                    onClick={() => {
+                      setTambah(i => !i);
+                      setOpen(true);
+                    }}
+                  >
+                    <ListItemIcon className={classes.listIcon}>
+                      <AddBox />
+                    </ListItemIcon>
+                    <ListItemText primary='Tambahkan' />
+                    {tambah ? <ExpandLess /> : <ExpandMore />}
+                  </ListItem>
+                </Tooltip>
 
-            <Collapse in={tambah} timeout='auto' unmountOnExit>
-              <List component='div' disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <SubdirectoryArrowRight />
-                  </ListItemIcon>
-                  <ListItemText primary='Materi' />
-                </ListItem>
+                <Collapse in={tambah} timeout='auto' unmountOnExit>
+                  <List component='div' disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <SubdirectoryArrowRight />
+                      </ListItemIcon>
+                      <ListItemText primary='Materi' />
+                    </ListItem>
+                  </List>
+
+                  <List component='div' disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <SubdirectoryArrowRight />
+                      </ListItemIcon>
+                      <ListItemText primary='Laporan' />
+                    </ListItem>
+                  </List>
+
+                  <List component='div' disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <SubdirectoryArrowRight />
+                      </ListItemIcon>
+                      <ListItemText primary='Mata Kuliah' />
+                    </ListItem>
+                  </List>
+
+                  <List component='div' disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <SubdirectoryArrowRight />
+                      </ListItemIcon>
+                      <ListItemText primary='Kelas' />
+                    </ListItem>
+                  </List>
+                </Collapse>
+
+                {/* Input Nilai */}
+
+                <Tooltip
+                  title={open ? '' : 'Input Nilai'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem button>
+                    <ListItemIcon className={classes.listIcon}>
+                      <Input />
+                    </ListItemIcon>
+                    <ListItemText primary='Input Nilai' />
+                  </ListItem>
+                </Tooltip>
+
+                {/* Edit Kode */}
+
+                <Tooltip
+                  title={open ? '' : 'Edit Kode'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem button>
+                    <ListItemIcon className={classes.listIcon}>
+                      <SettingsEthernet />
+                    </ListItemIcon>
+                    <ListItemText primary='Edit Kode' />
+                  </ListItem>
+                </Tooltip>
+
+                {/* Edit Jadwal */}
+
+                <Tooltip
+                  title={open ? '' : 'Edit Jadwal'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem button>
+                    <ListItemIcon className={classes.listIcon}>
+                      <ListAlt />
+                    </ListItemIcon>
+                    <ListItemText primary='Edit Jadwal' />
+                  </ListItem>
+                </Tooltip>
+
+                {/* Edit Jadwal */}
+
+                <Tooltip
+                  title={open ? '' : 'Daftar User'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem button>
+                    <ListItemIcon className={classes.listIcon}>
+                      <People />
+                    </ListItemIcon>
+                    <ListItemText primary='Daftar User' />
+                  </ListItem>
+                </Tooltip>
               </List>
-
-              <List component='div' disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <SubdirectoryArrowRight />
-                  </ListItemIcon>
-                  <ListItemText primary='Laporan' />
-                </ListItem>
-              </List>
-
-              <List component='div' disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <SubdirectoryArrowRight />
-                  </ListItemIcon>
-                  <ListItemText primary='Mata Kuliah' />
-                </ListItem>
-              </List>
-
-              <List component='div' disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <SubdirectoryArrowRight />
-                  </ListItemIcon>
-                  <ListItemText primary='Kelas' />
-                </ListItem>
-              </List>
-            </Collapse>
-
-            {/* Input Nilai */}
-
-            <Tooltip
-              title={open ? '' : 'Input Nilai'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem button>
-                <ListItemIcon className={classes.listIcon}>
-                  <Input />
-                </ListItemIcon>
-                <ListItemText primary='Input Nilai' />
-              </ListItem>
-            </Tooltip>
-
-            {/* Edit Kode */}
-
-            <Tooltip
-              title={open ? '' : 'Edit Kode'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem button>
-                <ListItemIcon className={classes.listIcon}>
-                  <SettingsEthernet />
-                </ListItemIcon>
-                <ListItemText primary='Edit Kode' />
-              </ListItem>
-            </Tooltip>
-
-            {/* Edit Jadwal */}
-
-            <Tooltip
-              title={open ? '' : 'Edit Jadwal'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem button>
-                <ListItemIcon className={classes.listIcon}>
-                  <ListAlt />
-                </ListItemIcon>
-                <ListItemText primary='Edit Jadwal' />
-              </ListItem>
-            </Tooltip>
-
-            {/* Edit Jadwal */}
-
-            <Tooltip
-              title={open ? '' : 'Daftar User'}
-              placement='right'
-              classes={{ tooltip: classes.lightTooltip }}
-            >
-              <ListItem button>
-                <ListItemIcon className={classes.listIcon}>
-                  <People />
-                </ListItemIcon>
-                <ListItemText primary='Daftar User' />
-              </ListItem>
-            </Tooltip>
-          </List>
+            </Fragment>
+          ) : null}
         </Drawer>
 
         {/* Application Page Content : */}

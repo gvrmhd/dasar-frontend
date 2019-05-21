@@ -9,9 +9,6 @@ import {
   Input,
   InputLabel,
   Typography,
-  MenuItem,
-  ListItemIcon,
-  ListItemText
 } from '@material-ui/core/';
 import { PersonAdd } from '@material-ui/icons';
 import { AppContext } from '../../App';
@@ -65,7 +62,7 @@ const RegisterDialog = props => {
 
   // Close DialogBox and Remove All Value
   const closeDialog = () => {
-    context.registerClose();
+    context.setRegister(false);
     setNim();
     setPassword();
   };
@@ -86,7 +83,7 @@ const RegisterDialog = props => {
         fullWidth
         maxWidth='xs'
         open={context.registerDialog}
-        onClose={closeDialog}
+        onClose={() => context.setRegister(false)}
         aria-labelledby='form-dialog-title'
       >
         <DialogContent className='hideScroll'>

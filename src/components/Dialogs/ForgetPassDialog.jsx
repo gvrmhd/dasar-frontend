@@ -25,7 +25,7 @@ export default props => {
   return (
     <Dialog
       open={context.forgetDialog}
-      onClose={context.forgetClose}
+      onClose={() => context.setForget(false)}
       aria-labelledby='form-dialog-title'
     >
       <DialogTitle id='form-dialog-title'>Lupa Password ?</DialogTitle>
@@ -45,7 +45,7 @@ export default props => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={context.forgetClose} color='primary'>
+        <Button onClick={() => context.setForget(false)} color='primary'>
           Cancel
         </Button>
         <Button onClick={handleSubmit} color='primary'>

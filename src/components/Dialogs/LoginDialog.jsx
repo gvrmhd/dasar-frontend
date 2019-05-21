@@ -65,7 +65,7 @@ const LoginDialog = props => {
 
   // Close DialogBox and Remove All Value
   const closeDialog = () => {
-    context.loginClose();
+    context.setLogin(false);
     setNim();
     setPassword();
     setRemember(false);
@@ -87,11 +87,10 @@ const LoginDialog = props => {
         fullWidth
         maxWidth='xs'
         open={context.loginDialog}
-        onClose={closeDialog}
+        onClose={() => context.setLogin(false)}
         aria-labelledby='form-dialog-title'
       >
-        <div >
-          <DialogContent>
+          <DialogContent className='hideScroll'>
             <div className={classes.paper}>
               <Avatar className={classes.avatar}>
                 <Person />
@@ -135,7 +134,6 @@ const LoginDialog = props => {
               </div>
             </form>
           </DialogContent>
-        </div>
       </Dialog>
     </div>
   );

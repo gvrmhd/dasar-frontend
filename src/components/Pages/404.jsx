@@ -6,11 +6,6 @@ const style = theme => ({
 });
 
 const Error = props => {
-  
-
-  const handler = () => {
-    
-  }
 
   return (
     <Fragment>

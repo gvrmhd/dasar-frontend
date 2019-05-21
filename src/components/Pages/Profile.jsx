@@ -1,7 +1,6 @@
 import React, { Fragment, useContext } from 'react';
 import { AppContext } from '../../App';
 import { withStyles, Typography } from '@material-ui/core';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 const style = theme => ({});
 
