@@ -41,6 +41,8 @@ import Visibility from '@material-ui/icons/Visibility';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import SettingsBackupRestore from '@material-ui/icons/SettingsBackupRestore';
 
+import LogOutDialog from './Dialogs/LogOutDialog';
+
 const drawerWidth = 220;
 
 const styles = theme => ({
@@ -226,7 +228,7 @@ const Header = props => {
 
             {context.checkUser() ? (
               <Link
-                to='/profile'
+                to='/dash/profile'
                 style={{ textDecoration: 'none', color: 'white' }}
               >
                 <Typography color='inherit' variant='subtitle1' noWrap>
@@ -302,17 +304,18 @@ const Header = props => {
                     </MenuItem>
                   ]
                 ) : (
-                  <MenuItem
-                    onClick={() => {
-                      context.setForget(true);
-                      handleClose();
-                    }}
-                  >
-                    <ListItemIcon>
-                      <SettingsBackupRestore />
-                    </ListItemIcon>
-                    <ListItemText>Logout</ListItemText>
-                  </MenuItem>
+                  <LogOutDialog close={handleClose} />
+                  // <MenuItem
+                  //   onClick={() => {
+                  //     context.setForget(true);
+                  //     handleClose();
+                  //   }}
+                  // >
+                  //   <ListItemIcon>
+                  //     <SettingsBackupRestore />
+                  //   </ListItemIcon>
+                  //   <ListItemText>Logout</ListItemText>
+                  // </MenuItem>
                 )}
               </Menu>
             </div>
@@ -362,7 +365,7 @@ const Header = props => {
             </Tooltip>
 
             <Collapse in={download} timeout='auto' unmountOnExit>
-              <Link to='/materi' style={{ textDecoration: 'none' }}>
+              <Link to='/dash/materi' style={{ textDecoration: 'none' }}>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <SubdirectoryArrowRight />
@@ -371,7 +374,7 @@ const Header = props => {
                 </ListItem>
               </Link>
 
-              <Link to='/laporan' style={{ textDecoration: 'none' }}>
+              <Link to='/dash/laporan' style={{ textDecoration: 'none' }}>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <SubdirectoryArrowRight />

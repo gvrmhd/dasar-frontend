@@ -1,6 +1,8 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useEffect } from 'react';
 import { withStyles, Typography } from '@material-ui/core';
 import { AppContext } from '../../App';
+import axios from 'axios';
+import jwt from 'jwt-decode';
 
 const style = theme => ({
   root: {
@@ -13,6 +15,10 @@ const style = theme => ({
 
 const Main = props => {
   const context = useContext(AppContext);
+
+  useEffect(() => {
+    document.title = 'BASIC Laboratory | Beranda';
+  },[]);
 
   return (
     <Fragment>

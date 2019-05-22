@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 import { blue, lightBlue } from '@material-ui/core/colors';
+import { BrowserRouter } from 'react-router-dom';
 
 const theme = createMuiTheme({
   palette: {
@@ -16,7 +17,9 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </MuiThemeProvider>,
   document.getElementById('root')
 );

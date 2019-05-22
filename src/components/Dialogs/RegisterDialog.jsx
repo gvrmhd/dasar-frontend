@@ -1,17 +1,16 @@
-import React, { useContext, useState, Fragment } from 'react';
+import React, { useContext, useState, useEffect, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
   Dialog,
   DialogContent,
   Avatar,
-  FormControl,
-  Input,
-  InputLabel,
-  Typography,
+  Typography
 } from '@material-ui/core/';
 import { PersonAdd } from '@material-ui/icons';
 import { AppContext } from '../../App';
+import axios from 'axios';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 const styles = theme => ({
   main: {
@@ -39,10 +38,13 @@ const styles = theme => ({
   },
   form: {
     // width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit,
   },
   submit: {
     marginTop: theme.spacing.unit * 5
+  },
+  input: {
+    marginTop: theme.spacing.unit * 2
   }
 });
 
@@ -51,11 +53,11 @@ const RegisterDialog = props => {
   const context = useContext(AppContext);
 
   // Form Data State
-  const [nim, setNim] = useState();
-  const [telp, setTelp] = useState();
-  const [nama, setNama] = useState();
-  const [password, setPassword] = useState();
-  const [password2, setPassword2] = useState();
+  const [nim, setNim] = useState('');
+  const [no_hp, setHp] = useState('');
+  const [nama, setNama] = useState('');
+  const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
 
   // MaterialUI Theme Classes
   const { classes } = props;
@@ -63,18 +65,43 @@ const RegisterDialog = props => {
   // Close DialogBox and Remove All Value
   const closeDialog = () => {
     context.setRegister(false);
-    setNim();
-    setPassword();
+    setNim('');
+    setHp('');
+    setNama('');
+    setPassword('');
+    setPassword2('');
   };
 
-  // Handle Submit Button
-  const handleSubmit = e => {
-    const data = { nim, password, nama, password2, telp };
-    if (data.nim && data.password) {
-      e.preventDefault();
-      closeDialog();
-      console.log(data);
-    }
+  // Adding Confirm Password Validation
+  useEffect(() => {
+    ValidatorForm.addValidationRule('passwordMatch', val => {
+      if (val !== password) {
+        return false;
+      }
+      return true;
+    });
+  }, [password]);
+
+  // Handle Form Submit
+  const formSubmitted = e => {
+    const params = { nim, password, nama, no_hp };
+    const url = process.env.REACT_APP_API + '/auth/register';
+
+    e.preventDefault();
+    context.isLoading(true);
+    closeDialog();
+    console.log(params);
+
+    axios
+      .request({ method: 'POST', url, params })
+      .then(res => {
+        console.log(res.data);
+        context.isLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        context.isLoading(false);
+      });
   };
 
   return (
@@ -83,7 +110,7 @@ const RegisterDialog = props => {
         fullWidth
         maxWidth='xs'
         open={context.registerDialog}
-        onClose={() => context.setRegister(false)}
+        onClose={closeDialog}
         aria-labelledby='form-dialog-title'
       >
         <DialogContent className='hideScroll'>
@@ -95,49 +122,92 @@ const RegisterDialog = props => {
               Register
             </Typography>
           </div>
-          <form className={classes.form}>
-            <FormControl margin='normal' fullWidth required>
-              <InputLabel htmlFor='nim'>NIM</InputLabel>
-              <Input type='number' onChange={e => setNim(e.target.value)} />
-            </FormControl>
 
-            <FormControl margin='normal' fullWidth required>
-              <InputLabel>Nama</InputLabel>
-              <Input type='text' onChange={e => setNama(e.target.value)} />
-            </FormControl>
+          <ValidatorForm
+            className={classes.form}
+            onSubmit={e => formSubmitted(e)}
+            onError={errors => console.log(errors)}
+          >
+            <TextValidator
+              className={classes.input}
+              fullWidth
+              label='NIM'
+              onChange={e => setNim(e.target.value)}
+              name='nim'
+              value={nim}
+              validators={[
+                'required',
+                'isNumber',
+                'maxStringLength:9',
+                'minStringLength:9'
+              ]}
+              errorMessages={[
+                'Field ini harus di isi',
+                'NIM harus berupa angka',
+                'NIM Harus 9 angka',
+                'NIM Harus 9 angka'
+              ]}
+            />
 
-            <FormControl margin='normal' fullWidth required>
-              <InputLabel htmlFor='telp'>No. Telpon</InputLabel>
-              <Input type='number' onChange={e => setTelp(e.target.value)} />
-            </FormControl>
+            <TextValidator
+              className={classes.input}
+              fullWidth
+              label='Nama'
+              onChange={e => setNama(e.target.value)}
+              name='nama'
+              value={nama}
+              validators={['required']}
+              errorMessages={['Field ini harus di isi']}
+            />
 
-            <FormControl margin='normal' fullWidth required>
-              <InputLabel htmlFor='password'>Password</InputLabel>
-              <Input
-                type='password'
-                onChange={e => setPassword(e.target.value)}
-              />
-            </FormControl>
+            <TextValidator
+              className={classes.input}
+              fullWidth
+              label='No Handphone'
+              onChange={e => setHp(e.target.value)}
+              name='no_hp'
+              value={no_hp}
+              validators={['required', 'isNumber']}
+              errorMessages={['Field ini harus di isi !', 'Harus berupa angka']}
+            />
 
-            <FormControl margin='normal' fullWidth required>
-              <InputLabel htmlFor='password'>Verify Password</InputLabel>
-              <Input
-                type='password'
-                onChange={e => setPassword2(e.target.value)}
-              />
-            </FormControl>
+            <TextValidator
+              className={classes.input}
+              fullWidth
+              type='password'
+              label='Password'
+              onChange={e => setPassword(e.target.value)}
+              name='password'
+              value={password}
+              validators={['required']}
+              errorMessages={['Field ini harus di isi !']}
+            />
+
+            <TextValidator
+              className={classes.input}
+              fullWidth
+              type='password'
+              label='Konfirmasi Password'
+              onChange={e => setPassword2(e.target.value)}
+              name='password2'
+              value={password2}
+              validators={['required', 'passwordMatch']}
+              errorMessages={[
+                'Field ini harus di isi !',
+                'Password tidak sama !'
+              ]}
+            />
 
             <Button
               type='submit'
               variant='contained'
               color='primary'
               className={classes.submit}
-              onClick={handleSubmit}
               fullWidth
             >
               Submit
             </Button>
-          </form>
+          </ValidatorForm>
         </DialogContent>
       </Dialog>
     </Fragment>

@@ -18,7 +18,7 @@ export default props => {
     if (nim) {
       e.preventDefault();
       console.log('Reset Password : ' + nim);
-      context.forgetClose();
+      context.setForget(false);
     }
   };
 
