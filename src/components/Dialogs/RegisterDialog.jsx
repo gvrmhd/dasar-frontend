@@ -12,7 +12,6 @@ import {
 import { PersonAdd } from '@material-ui/icons';
 import { AppContext } from '../../App';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 const styles = theme => ({
@@ -27,11 +26,11 @@ const styles = theme => ({
     backgroundColor: theme.palette.secondary.main
   },
   form: {
-    margin: theme.spacing.unit * 3
+    // margin: theme.spacing.unit * 3
   },
   submit: {
     marginTop: theme.spacing.unit * 3,
-    marginBottom: '-15px',
+    // marginBottom: '-15px',
     height: theme.spacing.unit * 6,
     width: `calc(100% - 60px)`
   },
@@ -43,9 +42,6 @@ const styles = theme => ({
 const RegisterDialog = props => {
   // Get Root Context
   const context = useContext(AppContext);
-
-  // Snackbar Hook
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   // Form Data State
   const [nim, setNim] = useState('');
@@ -81,6 +77,7 @@ const RegisterDialog = props => {
   const formSubmitted = e => {
     const params = { nim, password, nama, no_hp };
     const url = process.env.REACT_APP_API + '/auth/register';
+    const key = context.snack({ msg: 'Mengirim Form Data', stay: true });
 
     e.preventDefault();
     context.isLoading(true);
@@ -90,28 +87,17 @@ const RegisterDialog = props => {
     axios
       .request({ method: 'POST', url, params })
       .then(res => {
+        context.endSnack(key);
+
         if (res.data.status) {
-          enqueueSnackbar(res.data.message, {
-            variant:'success',
-            autoHideDuration: 4000,
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center'
-            }
-          });
+          context.snack({ msg: res.data.message, type: 'success' });
         } else {
-          enqueueSnackbar(res.data.message, {
-            variant: 'warning',
-            autoHideDuration: 4000,
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center'
-            }
-          });
+          context.snack({ msg: res.data.message, type: 'warning' });
         }
         context.isLoading(false);
       })
       .catch(err => {
+        context.snack({ msg: 'Koneksi Error !', type: 'error' });
         console.log(err);
         context.isLoading(false);
       });
@@ -120,8 +106,8 @@ const RegisterDialog = props => {
   return (
     <Fragment>
       <Dialog
-        // fullWidth
-        // maxWidth='sm'
+        fullWidth
+        maxWidth='xs'
         open={context.registerDialog}
         onClose={closeDialog}
         aria-labelledby='form-dialog-title'
@@ -213,9 +199,10 @@ const RegisterDialog = props => {
             />
 
             <FormControlLabel
+            style={{ marginTop: 25 }}
               className={classes.input}
               control={<Checkbox value='remember' color='primary' />}
-              label='Saya berjanji akan belajar dengan serius dan memperhatikan Dosen/Asisten yang mengajar.'
+              label='Saya berjanji akan memperhatikan Dosen/Asisten yang mengajar.'
             />
 
             <div className={classes.paper}>

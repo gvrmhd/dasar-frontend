@@ -37,7 +37,7 @@ export default ({ close }) => {
   return (
     <Fragment>
       <MenuItem
-        key='-1'
+        key='1'
         onClick={() => {
           setDialog(true);
         }}

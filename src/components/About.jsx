@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import AppBar from '@material-ui/core/AppBar';
@@ -70,17 +70,24 @@ function About(props) {
   const { classes } = props;
   const context = useContext(AppContext);
 
+  useEffect(() => {
+    document.title = 'BASIC Laboratory';
+  },[]);
+
   return (
     <React.Fragment>
       <CssBaseline />
+
       <AppBar position='static' className={classes.appBar}>
-        <Toolbar>
+        <Toolbar >
           <CameraIcon className={classes.icon} />
           <Typography variant='h6' color='inherit' noWrap>
             Album layout
           </Typography>
         </Toolbar>
       </AppBar>
+
+
       <main>
         {/* Hero unit */}
         <div className={classes.heroUnit}>

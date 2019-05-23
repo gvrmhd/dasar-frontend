@@ -5,6 +5,7 @@ import { AppContext } from '../App';
 import { withStyles } from '@material-ui/core/styles';
 import { typography } from '@material-ui/system';
 import styled from 'styled-components';
+// ------------------------- Core -------------------------
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -100,7 +101,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    // overflowX: 'hidden',
+    overflowX: 'hidden',
     width: theme.spacing.unit * 7 + 1,
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing.unit * 9 + 1
@@ -115,7 +116,7 @@ const styles = theme => ({
   },
   // Content Body Class Style :
   content: {
-    flexGrow: 1,
+    // flexGrow: 1,
     height: `calc(100% - ${theme.spacing.unit * 5})`,
     padding: theme.spacing.unit * 3
   },
@@ -148,7 +149,7 @@ const styles = theme => ({
     right: 0
   },
   avatar: {
-    // margin: '-8px',
+    margin: '-8px',
     // height: '25px',
     // width: '25px'
     // padding: '-10px'
@@ -268,10 +269,10 @@ const Dashboard = props => {
                       .split(' ')
                       .map(n => n[0])
                       .join('')
-                      .substring(0, 1)}
+                      .substring(0, 2)}
                   </Avatar>
                 ) : (
-                  <AccountCircle fontSize='large' />
+                  <AccountCircle />
                 )}
               </IconButton>
 
@@ -572,6 +573,15 @@ const Dashboard = props => {
                       <ListItemText primary='Kelas' />
                     </ListItem>
                   </List>
+
+                  <List component='div' disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <ChevronRight />
+                      </ListItemIcon>
+                      <ListItemText primary='Jadwal' />
+                    </ListItem>
+                  </List>
                 </Collapse>
 
                 {/* Input Nilai */}
@@ -586,6 +596,21 @@ const Dashboard = props => {
                       <Input />
                     </ListItemIcon>
                     <ListItemText primary='Input Nilai' />
+                  </ListItem>
+                </Tooltip>
+
+                {/* Edit Jadwal */}
+
+                <Tooltip
+                  title={open ? '' : 'Rekap Nilai'}
+                  placement='right'
+                  classes={{ tooltip: classes.lightTooltip }}
+                >
+                  <ListItem button>
+                    <ListItemIcon className={classes.listIcon}>
+                      <ListAlt />
+                    </ListItemIcon>
+                    <ListItemText primary='Rekap Nilai' />
                   </ListItem>
                 </Tooltip>
 
@@ -604,22 +629,7 @@ const Dashboard = props => {
                   </ListItem>
                 </Tooltip>
 
-                {/* Edit Jadwal */}
-
-                <Tooltip
-                  title={open ? '' : 'Edit Jadwal'}
-                  placement='right'
-                  classes={{ tooltip: classes.lightTooltip }}
-                >
-                  <ListItem button>
-                    <ListItemIcon className={classes.listIcon}>
-                      <ListAlt />
-                    </ListItemIcon>
-                    <ListItemText primary='Edit Jadwal' />
-                  </ListItem>
-                </Tooltip>
-
-                {/* Edit Jadwal */}
+                {/* Daftar User */}
 
                 <Tooltip
                   title={open ? '' : 'Daftar User'}

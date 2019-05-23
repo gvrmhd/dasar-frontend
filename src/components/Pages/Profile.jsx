@@ -16,13 +16,7 @@ const Profile = props => {
       <Typography variant='h4' gutterBottom>
         User Profile
       </Typography>
-      <Avatar>
-        {context.user.nama
-          .split(' ')
-          .map(n => n[0])
-          .join('')
-          .substring(0, 2)}
-      </Avatar>
+      
     </Fragment>
   );
 };

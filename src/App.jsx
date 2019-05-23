@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { withSnackbar } from 'notistack';
 import { compose } from 'recompose';
-import { Button, IconButton, CssBaseline } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { Button, CssBaseline } from '@material-ui/core';
 
 import Dashboard from './Components/Dashboard';
 import About from './Components/About';
@@ -53,24 +52,24 @@ class App extends Component {
     // Router Pusher
     goto: this.props.history.push,
     // Custom SnackBar
-    snack: ({ msg, type }) =>
+    snack: ({ msg, type, stay }) =>
       this.props.enqueueSnackbar(msg, {
         variant: type,
-        autoHideDuration: 4000,
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center'
-        },
-        action: key => (
-          <IconButton
-            color='inherit'
-            // size='small'
-            onClick={() => this.props.closeSnackbar(key)}
-          >
-            <Close />
-          </IconButton>
-        )
+        persist: stay,
+        autoHideDuration: stay ? null : 4000,
+        action: !stay
+          ? key => (
+              <Button
+                color='inherit'
+                onClick={() => this.props.closeSnackbar(key)}
+              >
+                OK
+              </Button>
+            )
+          : null
       }),
+    // Close Snackbar
+    endSnack: key => this.props.closeSnackbar(key),
     // Get user data from token
     getProfile: () => {
       const token = localStorage.getItem('Token');
@@ -81,11 +80,7 @@ class App extends Component {
         const nim = jwt(token).custom.nim;
         const url = process.env.REACT_APP_API + '/mahasiswa/' + nim;
         const headers = { Token: token };
-        const kay = this.props.enqueueSnackbar('Loading User Data ...', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center'
-          }});
+        const kay = this.state.snack({ msg: 'Loading User Data', stay: true });
 
         axios
           .request({ method: 'GET', url, headers })
@@ -93,7 +88,7 @@ class App extends Component {
             this.props.closeSnackbar(kay);
             if (res.data.status) {
               console.log(res.data.data);
-              this.state.snack({ msg: 'Berhasil Login', type:'success' });
+              this.state.snack({ msg: 'Berhasil Login', type: 'success' });
               this.setState({
                 user: res.data.data,
                 loading: false,
@@ -105,6 +100,7 @@ class App extends Component {
             }
           })
           .catch(err => {
+            this.props.closeSnackbar(kay);
             this.state.snack({ msg: 'Koneksi Gagal !', type: 'error' });
             this.setState({ loading: false, logStatus: false });
             console.log(err);

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -11,7 +11,6 @@ import { Person } from '@material-ui/icons';
 import { AppContext } from '../../App';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
 
 const styles = theme => ({
   paper: {
@@ -40,9 +39,6 @@ const LoginDialog = ({ classes }) => {
   // Get Root Context
   const context = useContext(AppContext);
 
-  // Snackbar Hook
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
   // Form Data State
   const [nim, setNim] = useState('');
   const [password, setPassword] = useState('');
@@ -63,19 +59,25 @@ const LoginDialog = ({ classes }) => {
     e.preventDefault();
     context.isLoading(true);
 
+    const key = context.snack({ msg: 'Sending form data', stay: true });
+
     axios
       .request({ method: 'POST', url, params })
       .then(res => {
+        context.endSnack(key);
+
         if (res.data.status) {
           localStorage.setItem('Token', res.data.data.token);
           context.getProfile();
         } else {
-          context.snack({ msg:res.data.message, type:'error' });
+          context.snack({ msg: res.data.message, type: 'error' });
           context.isLoading(false);
         }
       })
       .catch(err => {
-        context.snack({ msg:'Koneksi Gagal !', type:'error' });
+        context.endSnack(key);
+
+        context.snack({ msg: 'Koneksi Gagal !', type: 'error' });
         context.isLoading(false);
       });
   };
