@@ -5,43 +5,35 @@ import {
   Dialog,
   DialogContent,
   Avatar,
-  Typography
+  Typography,
+  FormControlLabel,
+  Checkbox
 } from '@material-ui/core/';
 import { PersonAdd } from '@material-ui/icons';
 import { AppContext } from '../../App';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 const styles = theme => ({
-  main: {
-    width: 'auto',
-    display: 'block', // Fix IE 11 issue.
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 400,
-      marginLeft: 'auto',
-      marginRight: 'auto'
-    }
-  },
   paper: {
     marginTop: theme.spacing.unit,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'
-    // padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-    //   .spacing.unit * 3}px`
   },
   avatar: {
     margin: theme.spacing.unit,
     backgroundColor: theme.palette.secondary.main
   },
   form: {
-    // width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
+    margin: theme.spacing.unit * 3
   },
   submit: {
-    marginTop: theme.spacing.unit * 5
+    marginTop: theme.spacing.unit * 3,
+    marginBottom: '-15px',
+    height: theme.spacing.unit * 6,
+    width: `calc(100% - 60px)`
   },
   input: {
     marginTop: theme.spacing.unit * 2
@@ -51,6 +43,9 @@ const styles = theme => ({
 const RegisterDialog = props => {
   // Get Root Context
   const context = useContext(AppContext);
+
+  // Snackbar Hook
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   // Form Data State
   const [nim, setNim] = useState('');
@@ -95,7 +90,25 @@ const RegisterDialog = props => {
     axios
       .request({ method: 'POST', url, params })
       .then(res => {
-        console.log(res.data);
+        if (res.data.status) {
+          enqueueSnackbar(res.data.message, {
+            variant:'success',
+            autoHideDuration: 4000,
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'center'
+            }
+          });
+        } else {
+          enqueueSnackbar(res.data.message, {
+            variant: 'warning',
+            autoHideDuration: 4000,
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'center'
+            }
+          });
+        }
         context.isLoading(false);
       })
       .catch(err => {
@@ -107,8 +120,8 @@ const RegisterDialog = props => {
   return (
     <Fragment>
       <Dialog
-        fullWidth
-        maxWidth='xs'
+        // fullWidth
+        // maxWidth='sm'
         open={context.registerDialog}
         onClose={closeDialog}
         aria-labelledby='form-dialog-title'
@@ -129,6 +142,7 @@ const RegisterDialog = props => {
             onError={errors => console.log(errors)}
           >
             <TextValidator
+              autoFocus
               className={classes.input}
               fullWidth
               label='NIM'
@@ -198,15 +212,23 @@ const RegisterDialog = props => {
               ]}
             />
 
-            <Button
-              type='submit'
-              variant='contained'
-              color='primary'
-              className={classes.submit}
-              fullWidth
-            >
-              Submit
-            </Button>
+            <FormControlLabel
+              className={classes.input}
+              control={<Checkbox value='remember' color='primary' />}
+              label='Saya berjanji akan belajar dengan serius dan memperhatikan Dosen/Asisten yang mengajar.'
+            />
+
+            <div className={classes.paper}>
+              <Button
+                type='submit'
+                variant='contained'
+                color='primary'
+                className={classes.submit}
+                fullWidth
+              >
+                Submit
+              </Button>
+            </div>
           </ValidatorForm>
         </DialogContent>
       </Dialog>

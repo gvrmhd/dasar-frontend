@@ -66,7 +66,7 @@ const styles = theme => ({
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-function Album(props) {
+function About(props) {
   const { classes } = props;
   const context = useContext(AppContext);
 
@@ -100,19 +100,28 @@ function Album(props) {
               color='textSecondary'
               paragraph
             >
-              Belum gw edit, nyabar yak. Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
+              Selamat datang kepada mahasiswa dan mahasiswi STT-PLN, Lab
+              Basic merupakan Lab komputer yang digunakan untuk mempelajari
+              berbagai matakuliah pada bidang informatika. Dikhususkan dalam
+              mempelajari Bahasa pemrograman.
             </Typography>
             <div className={classes.heroButtons}>
               <Grid container spacing={16} justify='center'>
                 <Grid item>
-                  <Button variant='contained' color='primary' onClick={() => context.goto('/dash')}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => context.goto('/dash')}
+                  >
                     Halaman Dashboard
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button variant='outlined' color='primary' onClick={() => context.goto('/dash/materi')}>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    onClick={() => context.goto('/dash/materi')}
+                  >
                     Download Materi
                   </Button>
                 </Grid>
@@ -173,8 +182,8 @@ function Album(props) {
   );
 }
 
-Album.propTypes = {
+About.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Album);
+export default withStyles(styles)(About);

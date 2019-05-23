@@ -4,6 +4,7 @@ import App from './App';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 import { blue, lightBlue } from '@material-ui/core/colors';
 import { BrowserRouter } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 
 const theme = createMuiTheme({
   palette: {
@@ -18,7 +19,9 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <BrowserRouter>
-      <App />
+      <SnackbarProvider maxSnack={3}>
+        <App />
+      </SnackbarProvider>
     </BrowserRouter>
   </MuiThemeProvider>,
   document.getElementById('root')

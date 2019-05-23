@@ -20,12 +20,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Avatar from '@material-ui/core/Avatar';
 // ------------------------- Icons -------------------------
 import MenuIcon from '@material-ui/icons/Menu';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import SubdirectoryArrowRight from '@material-ui/icons/SubdirectoryArrowRight';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import ListAlt from '@material-ui/icons/ListAlt';
 import AddBox from '@material-ui/icons/AddBox';
@@ -34,6 +35,7 @@ import Input from '@material-ui/icons/Input';
 import School from '@material-ui/icons/School';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
 import Code from '@material-ui/icons/Code';
+import Settings from '@material-ui/icons/Settings';
 import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 import People from '@material-ui/icons/People';
@@ -144,10 +146,19 @@ const styles = theme => ({
     },
     left: 0,
     right: 0
+  },
+  avatar: {
+    // margin: '-8px',
+    // height: '25px',
+    // width: '25px'
+    // padding: '-10px'
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.secondary.main
+    // height: 'calc(100% - 10px)'
   }
 });
 
-const Header = props => {
+const Dashboard = props => {
   const { classes } = props;
 
   // Get Root Context
@@ -181,7 +192,9 @@ const Header = props => {
     setAnchor(null);
   };
 
-  const Box = styled.span`${typography}`;
+  const Box = styled.span`
+    ${typography}
+  `;
 
   return (
     <Fragment>
@@ -219,8 +232,11 @@ const Header = props => {
             )}
 
             <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
-              <Typography variant='h6' color='inherit' inline >
-                <Box fontWeight={700} inline>BASIC</Box>Lab
+              <Typography variant='h6' color='inherit' inline>
+                <Box fontWeight={700} inline>
+                  BASIC
+                </Box>
+                Lab
               </Typography>
             </Link>
 
@@ -246,8 +262,19 @@ const Header = props => {
                 color='inherit'
                 className={classes.profileButton}
               >
-                <AccountCircle />
+                {context.logStatus ? (
+                  <Avatar className={classes.avatar}>
+                    {context.user.nama
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')
+                      .substring(0, 1)}
+                  </Avatar>
+                ) : (
+                  <AccountCircle fontSize='large' />
+                )}
               </IconButton>
+
               <Menu
                 id='menu-appbar'
                 anchorEl={anchorEl}
@@ -305,17 +332,6 @@ const Header = props => {
                   ]
                 ) : (
                   <LogOutDialog close={handleClose} />
-                  // <MenuItem
-                  //   onClick={() => {
-                  //     context.setForget(true);
-                  //     handleClose();
-                  //   }}
-                  // >
-                  //   <ListItemIcon>
-                  //     <SettingsBackupRestore />
-                  //   </ListItemIcon>
-                  //   <ListItemText>Logout</ListItemText>
-                  // </MenuItem>
                 )}
               </Menu>
             </div>
@@ -360,7 +376,7 @@ const Header = props => {
                   <InboxIcon />
                 </ListItemIcon>
                 <ListItemText primary='Download' />
-                {download ? <ExpandLess /> : <ExpandMore />}
+                {download ? <ArrowDropUp /> : <ArrowDropDown />}
               </ListItem>
             </Tooltip>
 
@@ -368,7 +384,7 @@ const Header = props => {
               <Link to='/dash/materi' style={{ textDecoration: 'none' }}>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
-                    <SubdirectoryArrowRight />
+                    <ChevronRight />
                   </ListItemIcon>
                   <ListItemText primary='Materi' />
                 </ListItem>
@@ -377,7 +393,7 @@ const Header = props => {
               <Link to='/dash/laporan' style={{ textDecoration: 'none' }}>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
-                    <SubdirectoryArrowRight />
+                    <ChevronRight />
                   </ListItemIcon>
                   <ListItemText primary='Laporan' />
                 </ListItem>
@@ -439,7 +455,7 @@ const Header = props => {
                       <OpenInBrowser />
                     </ListItemIcon>
                     <ListItemText primary='Upload' />
-                    {upload ? <ExpandLess /> : <ExpandMore />}
+                    {upload ? <ArrowDropUp /> : <ArrowDropDown />}
                   </ListItem>
                 </Tooltip>
 
@@ -447,7 +463,7 @@ const Header = props => {
                   <List component='div' disablePadding>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
-                        <SubdirectoryArrowRight />
+                        <ChevronRight />
                       </ListItemIcon>
                       <ListItemText primary='Tugas' />
                     </ListItem>
@@ -456,7 +472,7 @@ const Header = props => {
                   <List component='div' disablePadding>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
-                        <SubdirectoryArrowRight />
+                        <ChevronRight />
                       </ListItemIcon>
                       <ListItemText primary='Ujian' />
                     </ListItem>
@@ -501,7 +517,7 @@ const Header = props => {
                 {/* Tambah : Materi, Laporan, Mata Kuliah, Kelas  */}
 
                 <Tooltip
-                  title={open ? '' : 'Tambahkan'}
+                  title={open ? '' : 'Pengaturan'}
                   placement='right'
                   classes={{ tooltip: classes.lightTooltip }}
                 >
@@ -513,10 +529,10 @@ const Header = props => {
                     }}
                   >
                     <ListItemIcon className={classes.listIcon}>
-                      <AddBox />
+                      <Settings />
                     </ListItemIcon>
-                    <ListItemText primary='Tambahkan' />
-                    {tambah ? <ExpandLess /> : <ExpandMore />}
+                    <ListItemText primary='Pengaturan' />
+                    {tambah ? <ArrowDropUp /> : <ArrowDropDown />}
                   </ListItem>
                 </Tooltip>
 
@@ -524,7 +540,7 @@ const Header = props => {
                   <List component='div' disablePadding>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
-                        <SubdirectoryArrowRight />
+                        <ChevronRight />
                       </ListItemIcon>
                       <ListItemText primary='Materi' />
                     </ListItem>
@@ -533,7 +549,7 @@ const Header = props => {
                   <List component='div' disablePadding>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
-                        <SubdirectoryArrowRight />
+                        <ChevronRight />
                       </ListItemIcon>
                       <ListItemText primary='Laporan' />
                     </ListItem>
@@ -542,7 +558,7 @@ const Header = props => {
                   <List component='div' disablePadding>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
-                        <SubdirectoryArrowRight />
+                        <ChevronRight />
                       </ListItemIcon>
                       <ListItemText primary='Mata Kuliah' />
                     </ListItem>
@@ -551,7 +567,7 @@ const Header = props => {
                   <List component='div' disablePadding>
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
-                        <SubdirectoryArrowRight />
+                        <ChevronRight />
                       </ListItemIcon>
                       <ListItemText primary='Kelas' />
                     </ListItem>
@@ -632,4 +648,4 @@ const Header = props => {
   );
 };
 
-export default withStyles(styles, { withTheme: true })(Header);
+export default withStyles(styles, { withTheme: true })(Dashboard);

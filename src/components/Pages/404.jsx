@@ -9,10 +9,10 @@ const style = theme => ({
 const Error = ({ classes }) => {
 
   return (
-    <div className={classes.root}>
+    <Fragment>
       <Typography variant='h4'>Halaman Tidak ditemukan !!</Typography>
       <Typography variant='h6'>Jangan pake routing manual bre ...</Typography>
-    </div>
+    </Fragment>
   );
 };
 

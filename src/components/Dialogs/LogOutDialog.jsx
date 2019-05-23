@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, Fragment } from 'react';
+import React, { useState, useContext, Fragment } from 'react';
 import { AppContext } from '../../App';
 import {
   Button,
@@ -11,7 +11,7 @@ import {
   ListItemIcon,
   ListItemText
 } from '@material-ui/core';
-import { SettingsBackupRestore } from '@material-ui/icons';
+import { RemoveCircle } from '@material-ui/icons';
 
 export default ({ close }) => {
   const context = useContext(AppContext);
@@ -28,6 +28,7 @@ export default ({ close }) => {
     onClosed();
 
     localStorage.clear();
+    context.snack({ msg:'Anda sudah Log Out', type:'warning' })
     context.setUser({});
     context.setLog(false);
     context.goto('/');
@@ -36,12 +37,13 @@ export default ({ close }) => {
   return (
     <Fragment>
       <MenuItem
+        key='-1'
         onClick={() => {
           setDialog(true);
         }}
       >
         <ListItemIcon>
-          <SettingsBackupRestore />
+          <RemoveCircle />
         </ListItemIcon>
         <ListItemText>Logout</ListItemText>
       </MenuItem>
@@ -59,10 +61,10 @@ export default ({ close }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} color='primary'variant='contained'>
+          <Button onClick={handleSubmit} color='primary' variant='contained'>
             Iya
           </Button>
-          <Button onClick={onClosed} color='primary' >
+          <Button onClick={onClosed} color='primary'>
             Tidak
           </Button>
         </DialogActions>
