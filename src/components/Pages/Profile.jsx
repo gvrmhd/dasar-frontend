@@ -9,6 +9,11 @@ const Profile = props => {
 
   useEffect(() => {
     document.title = 'BASIC Laboratory | Profile';
+
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(context.user.created_at).toLocaleDateString('id-ID', options);
+    console.log(date);
+
   }, []);
 
   return (
@@ -16,7 +21,7 @@ const Profile = props => {
       <Typography variant='h4' gutterBottom>
         User Profile
       </Typography>
-      
+      {context.user.created_at}
     </Fragment>
   );
 };

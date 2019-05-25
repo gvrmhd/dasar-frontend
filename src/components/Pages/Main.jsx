@@ -1,24 +1,44 @@
 import React, { Fragment, useContext, useEffect } from 'react';
-import { typography } from '@material-ui/system';
-import { withStyles, Typography, Paper, Grid } from '@material-ui/core';
-import { AppContext } from '../../App';
 import styled from 'styled-components';
+import classNames from 'classnames';
+import { typography } from '@material-ui/system';
+import { makeStyles } from '@material-ui/core/styles';
+import { NotificationImportant } from '@material-ui/icons';
+import { Typography, Paper, Grid, Divider } from '@material-ui/core';
 
-const style = theme => ({
+import { AppContext } from '../../App';
+
+const useStyles = makeStyles(theme => ({
   paper: {
-    padding: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit
+    padding: theme.spacing(3, 2)
+  },
+  divider: {
+    margin: theme.spacing(1, 0)
+  },
+  title: {
+    display: 'inline',
+    marginLeft: theme.spacing(1)
+  },
+  icon: {
+    marginBottom: '-3px'
+  },
+  jadwalPaper: {
+    marginTop: theme.spacing(1)
+  },
+  jadwalTitle: {
+    textAlign: "center"
   }
-});
+}));
 
-const Main = ({ classes }) => {
+const Main = props => {
   const context = useContext(AppContext);
+  const classes = useStyles();
 
   useEffect(() => {
     document.title = 'BASIC Laboratory | Beranda';
   }, []);
 
-  const Box = styled.span`
+  const Box = styled.div`
     ${typography}
   `;
 
@@ -27,29 +47,51 @@ const Main = ({ classes }) => {
       <Typography variant='h4' gutterBottom>
         {context.kata}
       </Typography>
-      <Typography paragraph variant='body1'>
-        Selamat Belajar !
-      </Typography>
 
-      <Paper className={classes.paper}>
-        <Typography variant='h5'>Info - Peraturan</Typography>
-        <Typography paragraph>
-          Harap seluruh praktikan untuk mematuhi tata tertib yang ada di dalam
-          Laboratorium. Apabila didapati praktikan yang melanggar peraturan akan
-          dikenakan sanksi oleh asisten yang berjaga.
-        </Typography>
-      </Paper>
+      <Grid container spacing={2} >
+        <Grid item xs={5}>
+          <Paper className={classes.paper}>
+            <NotificationImportant className={classes.icon} />
+            <Typography variant='h5' className={classes.title}>
+              Peraturan
+            </Typography>
+            <Divider className={classes.divider} component='li' />
+            <Typography>
+              Harap seluruh praktikan untuk mematuhi tata tertib yang ada di
+              dalam Laboratorium. Apabila didapati praktikan yang melanggar
+              peraturan akan dikenakan sanksi oleh asisten yang berjaga.
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={5}>
+          <Paper className={classes.paper}>
+            <NotificationImportant className={classes.icon} />
+            <Typography variant='h5' className={classes.title}>
+              Pengumpulan Tugas
+            </Typography>
+            <Divider className={classes.divider} component='li' />
+            <Typography>
+              Tugas praktikum di lab dapat dikumpulkan melalui website ini.
+              Silahkan <strong>Login</strong> , lalu gunakan menu{' '}
+              <strong>Upload</strong> disebelah kiri website kemudian pilih
+              tugas ataupun ujian. Ikuti langkah selanjutnya.
+            </Typography>
+          </Paper>
+        </Grid>
+      </Grid>
 
-      <Paper className={classes.paper}>
-        <Typography variant='h5'>Info - Pengumpulan Tugas</Typography>
-        <Typography paragraph>
-          Tugas praktikum di lab dapat dikumpulkan melalui website ini, gunakan
-          menu upload disebelah kiri website kemudian pilih tugas ataupun ujian.
-          Ikuti langkah selanjutnya.
-        </Typography>
-      </Paper>
+      <Grid container spacing={2} >
+        <Grid item xs={10}>
+          <Paper className={classNames(classes.jadwalPaper, classes.paper)}>
+            <Typography variant='h5' className={classes.jadwalTitle}>
+              Jadwal Kuliah
+            </Typography>
+            <Divider className={classes.divider} component='li' />
+          </Paper>
+        </Grid>
+      </Grid>
     </Fragment>
   );
 };
 
-export default withStyles(style, { withTheme: true })(Main);
+export default Main;

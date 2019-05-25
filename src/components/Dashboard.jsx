@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment, useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { AppContext } from '../App';
@@ -30,7 +30,8 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import ListAlt from '@material-ui/icons/ListAlt';
-import AddBox from '@material-ui/icons/AddBox';
+import SupervisorAccount from '@material-ui/icons/SupervisorAccount';
+import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import Input from '@material-ui/icons/Input';
 import School from '@material-ui/icons/School';
@@ -45,6 +46,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import SettingsBackupRestore from '@material-ui/icons/SettingsBackupRestore';
 
 import LogOutDialog from './Dialogs/LogOutDialog';
+import _ from 'lodash';
 
 const drawerWidth = 220;
 
@@ -159,9 +161,7 @@ const styles = theme => ({
   }
 });
 
-const Dashboard = props => {
-  const { classes } = props;
-
+const Dashboard = ({ classes, children }) => {
   // Get Root Context
   const context = useContext(AppContext);
 
@@ -233,29 +233,35 @@ const Dashboard = props => {
             )}
 
             <Link to='/' style={{ textDecoration: 'none', color: 'white' }}>
-              <Typography variant='h6' color='inherit' inline>
+              <Typography variant='h6' color='inherit' inline='true'>
                 <Box fontWeight={700} inline>
                   BASIC
                 </Box>
-                Lab
+                <Box fontWeight={400} inline>
+                  Lab
+                </Box>
               </Typography>
             </Link>
 
             <div style={{ flexGrow: 1 }} />
 
-            {context.checkUser() ? (
+            {context.logStatus ? (
               <Link
                 to='/dash/profile'
                 style={{ textDecoration: 'none', color: 'white' }}
               >
                 <Typography color='inherit' variant='subtitle1' noWrap>
-                  {context.user.nim}
+                  {'Hai, ' + _.head(_.words(context.user.nama))}
                 </Typography>
               </Link>
-            ) : null}
+            ) : (
+              <Typography color='inherit' variant='subtitle1' noWrap>
+                Silahkan Login
+              </Typography>
+            )}
 
+            {/* --------------------------------- Profile Menu --------------------------------- */}
             <div>
-              {/* --------------------------------- Profile Menu --------------------------------- */}
               <IconButton
                 aria-owns={openMenu ? 'menu-appbar' : undefined}
                 aria-haspopup='true'
@@ -263,16 +269,19 @@ const Dashboard = props => {
                 color='inherit'
                 className={classes.profileButton}
               >
-                {context.logStatus ? (
-                  <Avatar className={classes.avatar}>
-                    {context.user.nama
-                      .split(' ')
-                      .map(n => n[0])
-                      .join('')
-                      .substring(0, 2)}
-                  </Avatar>
-                ) : (
+                {!context.logStatus ? (
                   <AccountCircle />
+                ) : !context.user.is_asisten ? (
+                  <SupervisedUserCircle />
+                ) : (
+                  <SupervisorAccount />
+                  // <Avatar className={classes.avatar}>
+                  //   {context.user.nama
+                  //     .split(' ')
+                  //     .map(n => n[0])
+                  //     .join('')
+                  //     .substring(0, 1)}
+                  // </Avatar>
                 )}
               </IconButton>
 
@@ -382,7 +391,10 @@ const Dashboard = props => {
             </Tooltip>
 
             <Collapse in={download} timeout='auto' unmountOnExit>
-              <Link to='/dash/materi' style={{ textDecoration: 'none' }}>
+              <Link
+                to='/dash/materi'
+                style={{ textDecoration: 'none', color: 'black' }}
+              >
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <ChevronRight />
@@ -391,7 +403,10 @@ const Dashboard = props => {
                 </ListItem>
               </Link>
 
-              <Link to='/dash/laporan' style={{ textDecoration: 'none' }}>
+              <Link
+                to='/dash/laporan'
+                style={{ textDecoration: 'none', color: 'black' }}
+              >
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <ChevronRight />
@@ -651,7 +666,7 @@ const Dashboard = props => {
         {/* Application Page Content : */}
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {props.children}
+          {children}
         </main>
       </div>
     </Fragment>

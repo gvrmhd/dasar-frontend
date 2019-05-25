@@ -19,6 +19,7 @@ import axios from 'axios';
 import jwt from 'jwt-decode';
 import _ from 'lodash';
 import './Manual.css';
+import 'typeface-roboto';
 
 export const AppContext = React.createContext();
 
@@ -117,14 +118,13 @@ class App extends Component {
       return <Profile />;
     } else {
       console.log('Not Authorized !');
-      return <Main />;
+      this.props.history.push('/dash');
     }
   };
 
   componentDidMount() {
     this.state.getProfile();
     console.log(process.env.REACT_APP_API);
-    this.props.history.push('/dash');
   }
 
   componentDidUpdate() {

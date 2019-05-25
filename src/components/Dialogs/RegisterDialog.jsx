@@ -213,7 +213,7 @@ const RegisterDialog = props => {
                 className={classes.submit}
                 fullWidth
               >
-                Submit
+                Daftar
               </Button>
             </div>
           </ValidatorForm>

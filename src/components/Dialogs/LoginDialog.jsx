@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
   Dialog,
@@ -12,7 +13,7 @@ import { AppContext } from '../../App';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios from 'axios';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing.unit,
     display: 'flex',
@@ -27,17 +28,24 @@ const styles = theme => ({
     // margin: theme.spacing.unit * 2
   },
   submit: {
-    marginTop: theme.spacing.unit * 5 + 2,
-    width: 'calc(100% - 50px)'
+    marginTop: theme.spacing(6),
+    marginBottom: theme.spacing(3),
+    width: 'calc(100% - 70px)'
   },
   input: {
     marginTop: theme.spacing.unit * 2
+  }, 
+  root: {
+    width: theme.spacing(38)
   }
-});
+}));
 
-const LoginDialog = ({ classes }) => {
+const LoginDialog = props => {
   // Get Root Context
   const context = useContext(AppContext);
+  
+  // MUI JSS hook
+  const classes = useStyles();
 
   // Form Data State
   const [nim, setNim] = useState('');
@@ -76,7 +84,7 @@ const LoginDialog = ({ classes }) => {
       })
       .catch(err => {
         context.endSnack(key);
-
+        
         context.snack({ msg: 'Koneksi Gagal !', type: 'error' });
         context.isLoading(false);
       });
@@ -84,13 +92,11 @@ const LoginDialog = ({ classes }) => {
 
   return (
     <Dialog
-      fullWidth
-      maxWidth='xs'
       open={context.loginDialog}
       onClose={() => context.setLogin(false)}
       aria-labelledby='form-dialog-title'
     >
-      <DialogContent className='hideScroll'>
+      <DialogContent className={classNames('hideScroll', classes.root)}>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <Person />
@@ -106,7 +112,7 @@ const LoginDialog = ({ classes }) => {
           onError={errors => console.log(errors)}
         >
           <TextValidator
-            autoFocus
+            autoComplete='off'
             className={classes.input}
             fullWidth
             label='NIM'
@@ -146,7 +152,7 @@ const LoginDialog = ({ classes }) => {
               className={classes.submit}
               fullWidth
             >
-              Submit
+              Log In
             </Button>
           </div>
         </ValidatorForm>
@@ -155,4 +161,4 @@ const LoginDialog = ({ classes }) => {
   );
 };
 
-export default withStyles(styles, { withTheme: true })(LoginDialog);
+export default (LoginDialog);

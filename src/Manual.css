@@ -3,3 +3,7 @@
 .hideScroll::-webkit-scrollbar{
   display: none
 }
+
+li {
+  list-style-type: none;
+}
