@@ -8,6 +8,7 @@ import Dashboard from './Components/Dashboard';
 import About from './Components/About';
 
 import LoginDialog from './Components/Dialogs/LoginDialog';
+import LoadingDialog from './Components/Dialogs/LoadingDialog';
 import RegisterDialog from './Components/Dialogs/RegisterDialog';
 import ForgetPassDialog from './Components/Dialogs/ForgetPassDialog';
 import Main from './Components/Pages/Main';
@@ -50,6 +51,9 @@ class App extends Component {
     // Loading / LinearProgress bar
     loading: false,
     isLoading: set => this.setState({ loading: set }),
+    // LoadingDialog / CircularProgress
+    loadingDialog: false,
+    isLoadingDialog: set => this.setState({ loadingDialog: set }),
     // Router Pusher
     goto: this.props.history.push,
     // Custom SnackBar
@@ -174,6 +178,7 @@ class App extends Component {
         <LoginDialog />
         <RegisterDialog />
         <ForgetPassDialog />
+        <LoadingDialog />
       </AppContext.Provider>
     );
   }

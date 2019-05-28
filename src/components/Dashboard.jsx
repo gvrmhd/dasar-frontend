@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState, useEffect } from 'react';
+import React, { Fragment, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { AppContext } from '../App';
@@ -21,7 +21,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Avatar from '@material-ui/core/Avatar';
 // ------------------------- Icons -------------------------
 import MenuIcon from '@material-ui/icons/Menu';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
@@ -119,7 +118,6 @@ const styles = theme => ({
   // Content Body Class Style :
   content: {
     // flexGrow: 1,
-    height: `calc(100% - ${theme.spacing.unit * 5})`,
     padding: theme.spacing.unit * 3
   },
   listIcon: {
@@ -500,7 +498,7 @@ const Dashboard = ({ classes, children }) => {
                   placement='right'
                   classes={{ tooltip: classes.lightTooltip }}
                 >
-                  <ListItem button>
+                  <ListItem button onClick={() => context.isLoadingDialog(true)}>
                     <ListItemIcon className={classes.listIcon}>
                       <School />
                     </ListItemIcon>

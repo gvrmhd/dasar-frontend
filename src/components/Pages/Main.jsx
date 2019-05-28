@@ -10,7 +10,10 @@ import { AppContext } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    padding: theme.spacing(3, 2)
+    padding: theme.spacing(3, 2),
+    width: theme.spacing(80),
+    margin: theme.spacing(1,1),
+    display: 'inline-block'
   },
   divider: {
     margin: theme.spacing(1, 0)
@@ -23,7 +26,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '-3px'
   },
   jadwalPaper: {
-    marginTop: theme.spacing(1)
+    minWidth: theme.spacing(162)
+    // marginTop: theme.spacing(1)
   },
   jadwalTitle: {
     textAlign: "center"
@@ -48,8 +52,8 @@ const Main = props => {
         {context.kata}
       </Typography>
 
-      <Grid container spacing={2} >
-        <Grid item xs={5}>
+      {/* <Grid container spacing={2} >
+        <Grid item xs={5}> */}
           <Paper className={classes.paper}>
             <NotificationImportant className={classes.icon} />
             <Typography variant='h5' className={classes.title}>
@@ -62,8 +66,8 @@ const Main = props => {
               peraturan akan dikenakan sanksi oleh asisten yang berjaga.
             </Typography>
           </Paper>
-        </Grid>
-        <Grid item xs={5}>
+        {/* </Grid>
+        <Grid item xs={5}> */}
           <Paper className={classes.paper}>
             <NotificationImportant className={classes.icon} />
             <Typography variant='h5' className={classes.title}>
@@ -77,19 +81,21 @@ const Main = props => {
               tugas ataupun ujian. Ikuti langkah selanjutnya.
             </Typography>
           </Paper>
-        </Grid>
-      </Grid>
+        {/* </Grid>
+      </Grid> */}
 
-      <Grid container spacing={2} >
-        <Grid item xs={10}>
+      <br/>
+
+      {/* <Grid container spacing={2} >
+        <Grid item xs={10}> */}
           <Paper className={classNames(classes.jadwalPaper, classes.paper)}>
             <Typography variant='h5' className={classes.jadwalTitle}>
               Jadwal Kuliah
             </Typography>
             <Divider className={classes.divider} component='li' />
           </Paper>
-        </Grid>
-      </Grid>
+        {/* </Grid>
+      </Grid> */}
     </Fragment>
   );
 };

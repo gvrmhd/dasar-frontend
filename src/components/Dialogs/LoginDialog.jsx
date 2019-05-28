@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   submit: {
     marginTop: theme.spacing(6),
     marginBottom: theme.spacing(3),
-    width: 'calc(100% - 70px)'
+    // width: 'calc(100% - 70px)'
   },
   input: {
     marginTop: theme.spacing.unit * 2

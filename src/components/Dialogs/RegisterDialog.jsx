@@ -30,9 +30,9 @@ const styles = theme => ({
   },
   submit: {
     marginTop: theme.spacing.unit * 3,
-    // marginBottom: '-15px',
+    marginBottom: theme.spacing.unit * 3,
     height: theme.spacing.unit * 6,
-    width: `calc(100% - 60px)`
+    // width: `calc(100% - 60px)`
   },
   input: {
     marginTop: theme.spacing.unit * 2

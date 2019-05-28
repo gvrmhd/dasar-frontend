@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  CircularProgress
+  // CircularProgress
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -37,12 +37,12 @@ export default props => {
       open={context.forgetDialog}
       onClose={() => context.setForget(false)}
       aria-labelledby='form-dialog-title'
-      PaperComponent={CircularProgress}
-      PaperProps={{ classes: { colorPrimary: classes.colorPrimary } }}
-      disableBackdropClick
-      disableEscapeKeyDown
+      // PaperComponent={CircularProgress}
+      // PaperProps={{ classes: { colorPrimary: classes.colorPrimary } }}
+      // disableBackdropClick
+      // disableEscapeKeyDown
     >
-      {/* <DialogTitle id='form-dialog-title'>Lupa Password ?</DialogTitle>
+      <DialogTitle id='form-dialog-title'>Lupa Password ?</DialogTitle>
       <DialogContent>
         <DialogContentText>
           Isikan NIM anda di bawah ini, kemudian Asisten Lab akan melakukan
@@ -65,7 +65,7 @@ export default props => {
         <Button onClick={handleSubmit} color='primary'>
           Submit
         </Button>
-      </DialogActions> */}
+      </DialogActions>
     </Dialog>
   );
 };
