@@ -1,0 +1,13 @@
+/* Can't use CSS in JS for this : */
+
+.hideScroll::-webkit-scrollbar {
+  display: none;
+}
+
+li {
+  list-style-type: none;
+}
+
+section.exl-scrollable > div.exl-scrollable-scrollbar-wrapper {
+  z-index: 0;
+}

@@ -1,9 +1,0 @@
-/* Can't use CSS in JS for this : */
-
-.hideScroll::-webkit-scrollbar{
-  display: none
-}
-
-li {
-  list-style-type: none;
-}

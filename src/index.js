@@ -11,6 +11,18 @@ const theme = createMuiTheme({
     primary: blue,
     secondary: lightBlue
   },
+  overrides: {
+    MuiButton: {
+      containedPrimary: {
+        color: 'white'
+      }
+    },
+    MuiTypography:{
+      colorInherit:{
+        color: 'white'
+      }
+    }
+  },
   typography: {
     useNextVariants: true
   }

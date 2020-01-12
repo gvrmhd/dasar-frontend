@@ -4,27 +4,33 @@ import { withSnackbar } from 'notistack';
 import { compose } from 'recompose';
 import { Button, CssBaseline } from '@material-ui/core';
 
-import Dashboard from './Components/Dashboard';
-import About from './Components/About';
+import Dashboard from './Components/Utils/Dashboard';
+import About from './Components/Pages/About';
 
 import LoginDialog from './Components/Dialogs/LoginDialog';
 import LoadingDialog from './Components/Dialogs/LoadingDialog';
 import RegisterDialog from './Components/Dialogs/RegisterDialog';
 import ForgetPassDialog from './Components/Dialogs/ForgetPassDialog';
+
 import Main from './Components/Pages/Main';
 import Profile from './Components/Pages/Profile';
 import DownloadMateri from './Components/Pages/DownloadMateri';
 import DownloadLaporan from './Components/Pages/DownloadLaporan';
+import Users from './Components/Pages/Users';
+import Matakuliah from './Components/Pages/Matakuliah';
+import Kelas from './Components/Pages/Kelas';
 
 import axios from 'axios';
 import jwt from 'jwt-decode';
 import _ from 'lodash';
-import './Manual.css';
+import './global.css';
 import 'typeface-roboto';
 
 export const AppContext = React.createContext();
 
 class App extends Component {
+  setLoading = set => this.setState({ loading: set });
+
   state = {
     kata: process.env.REACT_APP_WEBSITE_NAME,
     // User Data
@@ -45,15 +51,25 @@ class App extends Component {
     // Register Dialog State
     registerDialog: false,
     setRegister: set => this.setState({ registerDialog: set }),
+    // Reset Password State
+    resetDialog: false,
+    setReset: set => this.setState({ resetDialog: set }),
     // Forget Password State
     forgetDialog: false,
     setForget: set => this.setState({ forgetDialog: set }),
     // Loading / LinearProgress bar
     loading: false,
-    isLoading: set => this.setState({ loading: set }),
+    isLoading: this.setLoading,
     // LoadingDialog / CircularProgress
-    loadingDialog: false,
-    isLoadingDialog: set => this.setState({ loadingDialog: set }),
+    loadingDialog: {
+      value: false,
+      set: i =>
+        this.setState({
+          loadingDialog: { ...this.state.loadingDialog, value: i }
+        })
+    },
+    // loadingDialog: false,
+    // isLoadingDialog: set => this.setState({ loadingDialog: set }),
     // Router Pusher
     goto: this.props.history.push,
     // Custom SnackBar
@@ -61,7 +77,7 @@ class App extends Component {
       this.props.enqueueSnackbar(msg, {
         variant: type,
         persist: stay,
-        autoHideDuration: stay ? null : 4000,
+        autoHideDuration: stay ? null : 2000,
         action: !stay
           ? key => (
               <Button
@@ -74,7 +90,7 @@ class App extends Component {
           : null
       }),
     // Close Snackbar
-    endSnack: key => this.props.closeSnackbar(key),
+    endSnack: this.props.closeSnackbar,
     // Get user data from token
     getProfile: () => {
       const token = localStorage.getItem('Token');
@@ -92,22 +108,25 @@ class App extends Component {
           .then(res => {
             this.props.closeSnackbar(kay);
             if (res.data.status) {
-              console.log(res.data.data);
+              // console.log(res.data.data);
               this.state.snack({ msg: 'Berhasil Login', type: 'success' });
               this.setState({
                 user: res.data.data,
                 loading: false,
                 logStatus: true
               });
+              this.state.goto('/dash');
             } else {
               this.state.snack({ msg: res.data.message, type: 'warning' });
               this.setState({ loading: false, logStatus: false });
+              localStorage.clear();
             }
           })
           .catch(err => {
             this.props.closeSnackbar(kay);
             this.state.snack({ msg: 'Koneksi Gagal !', type: 'error' });
             this.setState({ loading: false, logStatus: false });
+            localStorage.clear();
             console.log(err);
           });
       } else {
@@ -116,10 +135,19 @@ class App extends Component {
     }
   };
 
-  profileValidation = () => {
+  pageValidation = page => {
     if (this.state.logStatus) {
       console.log('Welcome !!');
-      return <Profile />;
+      return page;
+    } else {
+      console.log('Not Authorized !');
+      this.props.history.push('/dash');
+    }
+  };
+
+  adminValidation = page => {
+    if (this.state.logStatus && this.state.user.is_asisten === true) {
+      return page;
     } else {
       console.log('Not Authorized !');
       this.props.history.push('/dash');
@@ -140,6 +168,7 @@ class App extends Component {
         console.log('JWT Expired');
         localStorage.clear();
         this.setState({ user: {}, logStatus: false });
+        this.state.snack({ msg: 'Session Timed Out', type: 'warning' });
       }
     }
 
@@ -166,7 +195,22 @@ class App extends Component {
                 <Route exact path='/dash' component={Main} />
                 <Route path='/dash/materi' component={DownloadMateri} />
                 <Route path='/dash/laporan' component={DownloadLaporan} />
-                <Route path='/dash/profile' render={this.profileValidation} />
+                <Route
+                  path='/dash/profile'
+                  render={() => this.pageValidation(<Profile />)}
+                />
+                <Route
+                  path='/dash/users'
+                  render={() => this.adminValidation(<Users />)}
+                />
+                <Route
+                  path='/dash/matkul'
+                  render={() => this.adminValidation(<Matakuliah />)}
+                />
+                <Route
+                  path='/dash/kelas'
+                  render={() => this.adminValidation(<Kelas />)}
+                />
               </Switch>
             </Dashboard>
           )}
